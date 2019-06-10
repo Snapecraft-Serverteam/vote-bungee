@@ -1,0 +1,4 @@
+name: Vote
+version: ${project.version}
+main: net.snapecraft.vote.Vote
+description: Snapecraft Vote plugin
