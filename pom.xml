@@ -59,9 +59,8 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
         <repository>
-            <id>ibj-public</id>
-            <name>Ichbinjoe Public Repository</name>
-            <url>https://nexus.ibj.io/repository/maven-public/</url>
+            <id>bintray-repo</id>
+            <url>https://dl.bintray.com/nuvotifier/maven/</url>
         </repository>
     </repositories>
 
@@ -69,7 +68,7 @@
         <dependency>
             <groupId>com.vexsoftware</groupId>
             <artifactId>nuvotifier-universal</artifactId>
-            <version>2.5.1-SNAPSHOT</version>
+            <version>2.3.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
