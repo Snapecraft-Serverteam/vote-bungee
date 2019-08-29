@@ -1,5 +1,6 @@
 name: Vote
 version: ${project.version}
+author: Tallerik
 main: net.snapecraft.vote.Vote
 description: Snapecraft Vote plugin
 depend: ["NuVotifier"]
