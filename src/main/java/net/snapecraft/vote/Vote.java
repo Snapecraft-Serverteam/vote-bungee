@@ -8,11 +8,14 @@ import de.tallerik.utils.Result;
 import de.tallerik.utils.Row;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -22,6 +25,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -39,10 +43,24 @@ public final class Vote extends Plugin implements Listener {
     public void onEnable() {
         instance = this;
         getProxy().getPluginManager().registerCommand(this, new VoteCMD("vote"));
+        getProxy().getPluginManager().registerCommand(this, new VoteMSGCMD("votemsg"));
         initConfig();
         initMysql();
+        initTimer();
         getProxy().getPluginManager().registerListener(this, this);
         getProxy().registerChannel("vote:votechannel");
+    }
+
+    private void initTimer() {
+
+        ScheduledTask task = getProxy().getScheduler().schedule(this, () -> {
+            for(ServerInfo serverInfo : ProxyServer.getInstance().getServers().values()) {
+                for (ProxiedPlayer pp : serverInfo.getPlayers()) {
+                    pp.sendMessage(getVoteMessage(pp));
+                }
+            }
+        }, 1, 15, TimeUnit.MINUTES);
+
     }
 
     private void initMysql() {
@@ -102,7 +120,7 @@ public final class Vote extends Plugin implements Listener {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        mySQL.close();
     }
 
     @EventHandler
@@ -182,7 +200,7 @@ public final class Vote extends Plugin implements Listener {
                 if(uuid != null) {
                     String now = getCurrentTimeStamp();
                     String sql = "INSERT INTO vote_count (uuid,count,lastvote) VALUES ('"+ uuid + "', 1, '"+now+"')" +
-                            "  ON DUPLICATE KEY UPDATE count=count+1;";
+                            "  ON DUPLICATE KEY UPDATE count=count+1 AND lastvote='" + now + "';";
                     if(mySQL.custom(sql)) {
                         System.out.println("Adedd Vote to Database");
                     } else {
@@ -224,7 +242,7 @@ public final class Vote extends Plugin implements Listener {
     }
 
     private static String getCurrentTimeStamp() {
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
         Date now = new Date();
         return sdfDate.format(now);
     }
@@ -242,7 +260,7 @@ public final class Vote extends Plugin implements Listener {
     }
 
 
-    public int getVotes(ProxiedPlayer p) {
+    public int getVoteCount(ProxiedPlayer p) {
         if(isReady()) {
             Result result = mySQL.rowSelect("vote_count", "count", "`uuid`='" + getUUID(p.getUniqueId()) + "'");
 
@@ -258,6 +276,52 @@ public final class Vote extends Plugin implements Listener {
             return -1;
         }
     }
+
+    public VoteObject getVotes(ProxiedPlayer p) {
+        if(isReady()) {
+            Result result = mySQL.rowSelect("vote_count", "count, lastvote", "`uuid`='" + getUUID(p.getUniqueId()) + "'");
+
+            java.util.List<Row> rows = result.getRows();
+            try {
+                Row r = rows.get(0); // Only one shout exists
+                return new VoteObject(getUUID(p.getUniqueId()), (int)r.get("count"), (Date) r.get("lastvote"));
+            } catch (IndexOutOfBoundsException e) {
+                return null;
+            }
+
+        } else {
+            return null;
+        }
+    }
+
+    public static TextComponent getVoteMessage(ProxiedPlayer p) {
+        VoteObject vote = Vote.getInstance().getVotes(p);
+        try {
+            TextComponent message1 = new TextComponent("Heute schon " + ChatColor.GREEN + "gevoted?\n");
+            TextComponent message2 = new TextComponent(ChatColor.RESET + "Wenn du regelmäßig votest, " + ChatColor.RED + ChatColor.BOLD + "unterstützt " + ChatColor.RESET + "du den Server nicht nur, sondern bekommst auch " + ChatColor.RED + ChatColor.BOLD + "tolle Belohnungen!\n");
+            TextComponent message3;
+            if (vote == null) {
+                message3 = new TextComponent(ChatColor.RESET + "Du hast noch nicht gevoted\n");
+            } else {
+                message3 = new TextComponent(ChatColor.RESET + "Du hast bereits " + ChatColor.GOLD + ChatColor.BOLD + vote.getVotes() + ChatColor.RESET + " mal gevoted");
+            }
+
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            if (vote == null || !format.format(vote.getLast()).equals(format.format(new Date()))) {
+                TextComponent message4 = new TextComponent(ChatColor.RESET + "Zum Voten hier klicken: ");
+                TextComponent message5 = new TextComponent("" + ChatColor.BLUE + ChatColor.BOLD + ChatColor.UNDERLINE + "Vote");
+                message4.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://snapecraft.net/voten"));
+                message4.addExtra(message5);
+                message3.addExtra(message4);
+            }
+            message2.addExtra(message3);
+            message1.addExtra(message2);
+            return message1;
+        } catch (NullPointerException e) {}
+
+        return null;
+    }
+
 
     public static Vote getInstance() {
         return instance;

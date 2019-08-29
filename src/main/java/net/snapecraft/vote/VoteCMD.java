@@ -28,7 +28,7 @@ public class VoteCMD extends Command {
             sender.sendMessage(b3);
 
             if(sender instanceof ProxiedPlayer) {
-                int count = Vote.getInstance().getVotes((ProxiedPlayer)sender);
+                int count = Vote.getInstance().getVoteCount((ProxiedPlayer)sender);
                 ComponentBuilder b4 = new ComponentBuilder("Du hast schon ").color(ChatColor.LIGHT_PURPLE).append(Integer.toString(count)).color(ChatColor.GOLD).bold(true).append(" mal gevoted").color(ChatColor.LIGHT_PURPLE).bold(false);
                 sender.sendMessage(b4.create());
             }
