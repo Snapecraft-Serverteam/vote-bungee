@@ -308,7 +308,7 @@ public final class Vote extends Plugin implements Listener {
 
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             if (vote == null || !format.format(vote.getLast()).equals(format.format(new Date()))) {
-                TextComponent message4 = new TextComponent(ChatColor.RESET + "Zum Voten hier klicken: ");
+                TextComponent message4 = new TextComponent(ChatColor.RESET + "\nZum Voten hier klicken: ");
                 TextComponent message5 = new TextComponent("" + ChatColor.BLUE + ChatColor.BOLD + ChatColor.UNDERLINE + "Vote");
                 message4.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://snapecraft.net/voten"));
                 message4.addExtra(message5);
