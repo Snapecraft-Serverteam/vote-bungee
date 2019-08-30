@@ -173,7 +173,7 @@ public final class Vote extends Plugin implements Listener {
                         String sql = "INSERT INTO vote_temp (uuid,count) VALUES ('"+ uuid + "', 1)" +
                                 "  ON DUPLICATE KEY UPDATE count=count+1;";
                         if(mySQL.custom(sql)) {
-                            System.out.println("Adedd TempVote to Database");
+                            System.out.println("Added TempVote to Database");
                         } else {
                             System.out.println("Vote adding failed in vote_temp!");
                         }
@@ -202,7 +202,7 @@ public final class Vote extends Plugin implements Listener {
                     String sql = "INSERT INTO vote_count (uuid,count,lastvote) VALUES ('"+ uuid + "', 1, '"+now+"')" +
                             "  ON DUPLICATE KEY UPDATE count=count+1 AND lastvote='" + now + "';";
                     if(mySQL.custom(sql)) {
-                        System.out.println("Adedd Vote to Database");
+                        System.out.println("Added Vote to Database");
                     } else {
                         System.out.println("Vote adding failed in vote_count!");
                     }
