@@ -28,9 +28,15 @@ public class VoteCMD extends Command {
             sender.sendMessage(b3);
 
             if(sender instanceof ProxiedPlayer) {
-                int count = Vote.getInstance().getVoteCount((ProxiedPlayer)sender);
-                ComponentBuilder b4 = new ComponentBuilder("Du hast schon ").color(ChatColor.LIGHT_PURPLE).append(Integer.toString(count)).color(ChatColor.GOLD).bold(true).append(" mal gevoted").color(ChatColor.LIGHT_PURPLE).bold(false);
-                sender.sendMessage(b4.create());
+                VoteObject vote = Vote.getInstance().getVotes((ProxiedPlayer) sender);
+                int count = vote.getVotes();
+                int coins = vote.getCoins();
+                TextComponent c4 = new TextComponent(
+                        ChatColor.LIGHT_PURPLE + "Du hast schon " +
+                        ChatColor.GOLD + ChatColor.BOLD + Integer.toString(count) + ChatColor.RESET + ChatColor.LIGHT_PURPLE +
+                        " mal gevoted.\n" + ChatColor.AQUA + "Votecoins: " + ChatColor.BOLD + ChatColor.GOLD + Integer.toString(coins)
+                );
+                sender.sendMessage(c4);
             }
 
         } else {
