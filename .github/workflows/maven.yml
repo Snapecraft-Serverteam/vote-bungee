@@ -15,12 +15,5 @@ jobs:
         java-version: 1.8
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - name: Create a Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: 1.1.0-SNAPSHOT
-        release_name: Vote-Bungee
-        body: Automatic Release of Vote-Bungee
+
 
