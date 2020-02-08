@@ -91,7 +91,7 @@ public final class Vote extends Plugin implements Listener {
             String sql1 = "CREATE TABLE IF NOT EXISTS `vote_count`" +
                     "( `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                     " `uuid` VARCHAR(40) NOT NULL UNIQUE, " +
-                    "`count` INT NOT NULL , " +
+                    "`votecount` INT NOT NULL , " +
                     "`lastvote` DATE NOT NULL);";
             Statement sqlst = mySQL.createStatement();
             sqlst.executeUpdate(sql1);
@@ -100,7 +100,7 @@ public final class Vote extends Plugin implements Listener {
             String sql2 = "CREATE TABLE IF NOT EXISTS `vote_points`" +
                     "( `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                     " `uuid` VARCHAR(40) NOT NULL UNIQUE, " +
-                    "`value` INT NOT NULL);";
+                    "`valuecount` INT NOT NULL);";
 
             sqlst.executeUpdate(sql2);
             sqlst.close();
