@@ -27,4 +27,4 @@ jobs:
           title: "Development Build"
           files: |
             LICENSE.txt
-            /home/runner/work/vote-bungee/vote-bungee/target/*.jar
+            /home/runner/work/vote-bungee/vote-bungee/target/Vote-*.jar
