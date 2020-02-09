@@ -418,7 +418,7 @@ public final class Vote extends Plugin implements Listener {
             } else {
                 // Du hast bereits X mal gevoted
                 message3 = new TextComponent(ChatColor.RESET + "Du hast bereits " +
-                        ChatColor.GOLD + ChatColor.BOLD + vote.getVotes() + ChatColor.RESET + " mal gevoted" +
+                        ChatColor.GOLD + ChatColor.BOLD + vote.getVotes() + ChatColor.RESET + " mal gevoted " +
                         "und hast aktuell " + ChatColor.BOLD + ChatColor.GOLD + vote.getCoins() + ChatColor.RESET + " Votecoins!");
             }
 
