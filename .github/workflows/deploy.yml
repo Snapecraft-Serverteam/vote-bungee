@@ -2,8 +2,7 @@ name: "pre-release"
 
 on:
   push:
-    branches:
-      - "master"
+    paths: src/*
 
 jobs:
   pre-release:
