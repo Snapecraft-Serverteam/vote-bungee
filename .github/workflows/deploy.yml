@@ -2,8 +2,7 @@ name: "pre-release"
 
 on:
   push:
-    branches:
-      - "master"
+    paths: src/*
 
 jobs:
   pre-release:
@@ -27,4 +26,4 @@ jobs:
           title: "Development Build"
           files: |
             LICENSE.txt
-            *.jar
+            /home/runner/work/vote-bungee/vote-bungee/target/Vote-*.jar
